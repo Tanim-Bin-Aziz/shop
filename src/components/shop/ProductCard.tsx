@@ -42,14 +42,14 @@ export default function ProductCard({ product }: Props) {
         {isOutOfStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <span className="text-white text-xs font-medium bg-black/60 px-2 py-1 rounded-full">
-              স্টক নেই
+              Out of Stock
             </span>
           </div>
         )}
         {product.stock > 0 && product.stock <= 10 && (
           <div className="absolute top-2 left-2">
             <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
-              মাত্র {product.stock}টি বাকি
+              Only {product.stock} left
             </span>
           </div>
         )}
@@ -90,7 +90,7 @@ export default function ProductCard({ product }: Props) {
                               ? "bg-gray-200 cursor-not-allowed"
                               : "bg-green-600 hover:bg-green-700 active:scale-95"
                         }`}
-            aria-label="কার্টে যোগ করুন"
+            aria-label="Add to Cart"
           >
             {added ? "✓" : "+"}
           </button>

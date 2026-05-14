@@ -1,7 +1,11 @@
+import { ReactNode } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface CartItem {
+  image_url: string;
+  category: ReactNode;
+  stock: number;
   id: string;
   name: string;
   price: number;
@@ -16,6 +20,8 @@ interface CartStore {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   total: () => number;
+  totalItems: () => number;
+  totalPrice: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -52,6 +58,11 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
 
       total: () =>
+        get().items.reduce((acc, i) => acc + i.price * i.quantity, 0),
+
+      totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
+
+      totalPrice: () =>
         get().items.reduce((acc, i) => acc + i.price * i.quantity, 0),
     }),
     { name: "supershop-cart" },

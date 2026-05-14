@@ -56,7 +56,7 @@ export default function ProductsPage() {
             </svg>
             <input
               type="text"
-              placeholder="পণ্য খুঁজুন..."
+              placeholder="Search for products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl
@@ -104,7 +104,7 @@ export default function ProductsPage() {
         {/* Result count */}
         {!isLoading && !error && (
           <p className="text-sm text-gray-500 mb-4">
-            {filtered?.length ?? 0}টি পণ্য পাওয়া গেছে
+            {filtered?.length ?? 0} products found
             {selectedCategory && ` · ${selectedCategory}`}
             {searchQuery && ` · "${searchQuery}"`}
           </p>
@@ -114,7 +114,7 @@ export default function ProductsPage() {
         {error && (
           <div className="text-center py-16">
             <p className="text-4xl mb-3">⚠️</p>
-            <p className="text-gray-600">পণ্য লোড করতে সমস্যা হয়েছে</p>
+            <p className="text-gray-600">Failed to load products</p>
             <p className="text-sm text-gray-400 mt-1">
               {(error as Error).message}
             </p>
@@ -135,10 +135,10 @@ export default function ProductsPage() {
           <div className="text-center py-16">
             <p className="text-5xl mb-4">🔍</p>
             <p className="text-lg font-medium text-gray-700">
-              কোনো পণ্য পাওয়া যায়নি
+              No products found
             </p>
             <p className="text-sm text-gray-400 mt-1">
-              অন্য কিছু দিয়ে খোঁজ করুন
+              Try searching for something else
             </p>
             <button
               onClick={() => {
@@ -147,7 +147,7 @@ export default function ProductsPage() {
               }}
               className="mt-4 text-green-600 text-sm underline"
             >
-              সব পণ্য দেখুন
+              View All Products
             </button>
           </div>
         )}
