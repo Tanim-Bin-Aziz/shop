@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Search } from "lucide-react";
+
 import { useProducts } from "@/hooks/useProducts";
 import ProductCard from "@/components/shop/ProductCard";
 import ProductSkeleton from "@/components/shop/ProductSkeleton";
@@ -36,84 +38,76 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          {/* Search */}
-          <div className="relative mb-4">
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+      {/* HEADER */}
+      <div className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur transform-gpu">
+        <div className="mx-auto max-w-7xl px-3 py-3">
+          {/* SEARCH */}
+          <div className="relative mb-3">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+
             <input
               type="text"
-              placeholder="Search for products..."
+              placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl
-                         focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent
-                         bg-gray-50 text-sm"
+              className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-4 text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
             />
+
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
                 ✕
               </button>
             )}
           </div>
 
-          {/* Category Filter */}
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {CATEGORIES.map((cat) => {
-              const isActive =
-                cat === "All" ? !selectedCategory : selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() =>
-                    setSelectedCategory(cat === "All" ? undefined : cat)
-                  }
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
-                    ${
-                      isActive
-                        ? "bg-green-600 text-white shadow-sm"
-                        : "bg-white text-gray-600 border border-gray-200 hover:border-green-400 hover:text-green-600"
-                    }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          {/* CATEGORY (FIXED STABLE SCROLL) */}
+          <div className="overflow-x-auto no-scrollbar touch-pan-x">
+            <div className="flex flex-nowrap gap-2 min-w-max transform-gpu will-change-transform">
+              {CATEGORIES.map((cat) => {
+                const isActive =
+                  cat === "All" ? !selectedCategory : selectedCategory === cat;
+
+                return (
+                  <button
+                    key={cat}
+                    onClick={() =>
+                      setSelectedCategory(cat === "All" ? undefined : cat)
+                    }
+                    className={`
+                      flex-shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium
+                      transition-all active:scale-[0.98]
+                      ${
+                        isActive
+                          ? "bg-green-600 text-white"
+                          : "border border-gray-200 bg-white text-gray-600 hover:border-green-400 hover:text-green-600"
+                      }
+                    `}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Result count */}
+      {/* CONTENT */}
+      <div className="mx-auto max-w-7xl px-3 py-4">
+        {/* RESULT */}
         {!isLoading && !error && (
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="mb-3 text-xs text-gray-500">
             {filtered?.length ?? 0} products found
-            {selectedCategory && ` · ${selectedCategory}`}
-            {searchQuery && ` · "${searchQuery}"`}
           </p>
         )}
 
-        {/* Error */}
+        {/* ERROR */}
         {error && (
-          <div className="text-center py-16">
-            <p className="text-4xl mb-3">⚠️</p>
+          <div className="py-16 text-center">
+            <p className="text-4xl mb-2">⚠️</p>
             <p className="text-gray-600">Failed to load products</p>
             <p className="text-sm text-gray-400 mt-1">
               {(error as Error).message}
@@ -121,40 +115,31 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* Loading Skeleton */}
+        {/* LOADING */}
         {isLoading && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {Array.from({ length: 10 }).map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
               <ProductSkeleton key={i} />
             ))}
           </div>
         )}
 
-        {/* Empty State */}
+        {/* EMPTY */}
         {!isLoading && !error && filtered?.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-5xl mb-4">🔍</p>
-            <p className="text-lg font-medium text-gray-700">
+          <div className="py-16 text-center">
+            <p className="text-5xl mb-3">🔍</p>
+            <p className="text-base font-medium text-gray-700">
               No products found
             </p>
             <p className="text-sm text-gray-400 mt-1">
-              Try searching for something else
+              Try searching something else
             </p>
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory(undefined);
-              }}
-              className="mt-4 text-green-600 text-sm underline"
-            >
-              View All Products
-            </button>
           </div>
         )}
 
-        {/* Product Grid */}
+        {/* PRODUCTS */}
         {!isLoading && filtered && filtered.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
