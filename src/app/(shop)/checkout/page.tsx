@@ -27,7 +27,7 @@ export default function CheckoutPage() {
     phone: "",
     address: "",
     area: "",
-    city: "ঢাকা",
+    city: "Ishwardi",
     payment_method: "cod",
     notes: "",
   });
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
     } catch (err) {
       setError(
         (err as Error).message ||
-          "অর্ডার দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+          "An unexpected error occurred. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -110,9 +110,9 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-5xl mb-4">🛒</p>
-          <p className="text-gray-600 mb-4">কার্ট খালি</p>
+          <p className="text-gray-600 mb-4">Your cart is empty</p>
           <Link href="/products" className="text-green-600 underline">
-            পণ্য দেখুন
+            View Products
           </Link>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
               />
             </svg>
           </Link>
-          <h1 className="text-xl font-bold text-gray-800">চেকআউট</h1>
+          <h1 className="text-xl font-bold text-gray-800">Check Out</h1>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -150,16 +150,16 @@ export default function CheckoutPage() {
               <div className="bg-white rounded-2xl border border-gray-100 p-5">
                 <h2 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <span className="w-6 h-6 bg-green-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
-                    ১
+                    1
                   </span>
-                  ডেলিভারি তথ্য
+                  Delivery information
                 </h2>
 
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs text-gray-500 mb-1 block">
-                        পূর্ণ নাম *
+                        full name
                       </label>
                       <input
                         type="text"
@@ -167,14 +167,14 @@ export default function CheckoutPage() {
                         value={form.full_name}
                         onChange={handleChange}
                         required
-                        placeholder="আপনার নাম"
+                        placeholder="Your full name"
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm
                                    focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                     </div>
                     <div>
                       <label className="text-xs text-gray-500 mb-1 block">
-                        ফোন নম্বর *
+                        mobile number
                       </label>
                       <input
                         type="tel"
@@ -192,7 +192,7 @@ export default function CheckoutPage() {
 
                   <div>
                     <label className="text-xs text-gray-500 mb-1 block">
-                      পূর্ণ ঠিকানা *
+                      full address
                     </label>
                     <input
                       type="text"
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
                       value={form.address}
                       onChange={handleChange}
                       required
-                      placeholder="বাসা নং, রোড নং, এলাকা"
+                      placeholder="House No., Road No., Area"
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm
                                  focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs text-gray-500 mb-1 block">
-                        থানা/এলাকা *
+                        Area / Locality
                       </label>
                       <input
                         type="text"
@@ -217,14 +217,14 @@ export default function CheckoutPage() {
                         value={form.area}
                         onChange={handleChange}
                         required
-                        placeholder="যেমন: মিরপুর, গুলশান"
+                        placeholder="e.g. Bazar, Ishwardi city"
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm
                                    focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                     </div>
                     <div>
                       <label className="text-xs text-gray-500 mb-1 block">
-                        শহর *
+                        City
                       </label>
                       <select
                         name="city"
@@ -234,16 +234,7 @@ export default function CheckoutPage() {
                                    focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent
                                    bg-white"
                       >
-                        {[
-                          "ঢাকা",
-                          "চট্টগ্রাম",
-                          "সিলেট",
-                          "রাজশাহী",
-                          "খুলনা",
-                          "বরিশাল",
-                          "ময়মনসিংহ",
-                          "রংপুর",
-                        ].map((c) => (
+                        {["Ishwardi"].map((c) => (
                           <option key={c} value={c}>
                             {c}
                           </option>
@@ -254,14 +245,14 @@ export default function CheckoutPage() {
 
                   <div>
                     <label className="text-xs text-gray-500 mb-1 block">
-                      বিশেষ নির্দেশনা (ঐচ্ছিক)
+                      Special Instructions (Optional)
                     </label>
                     <textarea
                       name="notes"
                       value={form.notes}
                       onChange={handleChange}
                       rows={2}
-                      placeholder="যেমন: গেটে রেখে যান, সন্ধ্যায় দিন..."
+                      placeholder="e.g. Leave at the gate, deliver in the evening..."
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm resize-none
                                  focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
@@ -273,30 +264,30 @@ export default function CheckoutPage() {
               <div className="bg-white rounded-2xl border border-gray-100 p-5">
                 <h2 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <span className="w-6 h-6 bg-green-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
-                    ২
+                    2
                   </span>
-                  পেমেন্ট পদ্ধতি
+                  Payment method
                 </h2>
 
                 <div className="space-y-2">
                   {[
                     {
                       value: "cod",
-                      label: "ক্যাশ অন ডেলিভারি",
+                      label: "Cash on Delivery",
                       icon: "💵",
-                      desc: "পণ্য পেয়ে টাকা দিন",
+                      desc: "Pay when you receive the product",
                     },
                     {
                       value: "bkash",
-                      label: "বিকাশ",
+                      label: "bKash",
                       icon: "📱",
-                      desc: "বিকাশে পেমেন্ট করুন",
+                      desc: "Pay via bKash",
                     },
                     {
                       value: "nagad",
-                      label: "নগদ",
+                      label: "Nagad",
                       icon: "💳",
-                      desc: "নগদে পেমেন্ট করুন",
+                      desc: "Pay via Nagad",
                     },
                   ].map((method) => (
                     <label
@@ -332,7 +323,7 @@ export default function CheckoutPage() {
             {/* Right: Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24">
-                <h2 className="font-bold text-gray-800 mb-4">আপনার অর্ডার</h2>
+                <h2 className="font-bold text-gray-800 mb-4">Your Order</h2>
 
                 {/* Items */}
                 <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
@@ -350,21 +341,21 @@ export default function CheckoutPage() {
 
                 <div className="border-t border-gray-100 pt-3 space-y-2 text-sm">
                   <div className="flex justify-between text-gray-600">
-                    <span>সাবটোটাল</span>
+                    <span>Subtotal</span>
                     <span>৳{totalPrice().toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
-                    <span>ডেলিভারি</span>
+                    <span>Delivery</span>
                     <span
                       className={
                         delivery === 0 ? "text-green-600 font-medium" : ""
                       }
                     >
-                      {delivery === 0 ? "ফ্রি" : `৳${delivery}`}
+                      {delivery === 0 ? "Free" : `৳${delivery}`}
                     </span>
                   </div>
                   <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-800">
-                    <span>মোট</span>
+                    <span>Total</span>
                     <span className="text-green-700 text-lg">
                       ৳{grandTotal.toLocaleString()}
                     </span>
@@ -405,10 +396,10 @@ export default function CheckoutPage() {
                           d="M4 12a8 8 0 018-8v8H4z"
                         />
                       </svg>
-                      অর্ডার দেওয়া হচ্ছে...
+                      Placing order...
                     </>
                   ) : (
-                    "অর্ডার নিশ্চিত করুন ✓"
+                    "Confirm Order ✓"
                   )}
                 </button>
               </div>

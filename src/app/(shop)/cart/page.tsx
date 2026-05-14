@@ -58,7 +58,7 @@ export default function CartPage() {
             </svg>
           </Link>
           <h1 className="text-xl font-bold text-gray-800">
-            আমার কার্ট <span className="text-green-600">({totalItems()})</span>
+            My Cart <span className="text-green-600">({totalItems()})</span>
           </h1>
         </div>
 
@@ -74,7 +74,7 @@ export default function CartPage() {
             )}
             {totalPrice() >= 500 && (
               <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">
-                🎉 আপনি <strong>ফ্রি ডেলিভারি</strong> পাচ্ছেন!
+                🎉 You&lsquo;re getting <strong>free delivery</strong>!
               </div>
             )}
 
@@ -118,7 +118,7 @@ export default function CartPage() {
                   <button
                     onClick={() => removeItem(item.id)}
                     className="text-gray-300 hover:text-red-400 transition-colors"
-                    aria-label="সরিয়ে দিন"
+                    aria-label="Remove item from cart"
                   >
                     <svg
                       className="w-4 h-4"
@@ -166,26 +166,26 @@ export default function CartPage() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24">
               <h2 className="font-bold text-gray-800 text-lg mb-4">
-                অর্ডার সারসংক্ষেপ
+                Order Summary
               </h2>
 
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-gray-600">
-                  <span>সাবটোটাল ({totalItems()} পণ্য)</span>
+                  <span>Subtotal ({totalItems()} items)</span>
                   <span className="font-medium text-gray-800">
                     ৳{totalPrice().toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>ডেলিভারি চার্জ</span>
+                  <span>Delivery Charge</span>
                   <span
                     className={`font-medium ${delivery === 0 ? "text-green-600" : "text-gray-800"}`}
                   >
-                    {delivery === 0 ? "ফ্রি" : `৳${delivery}`}
+                    {delivery === 0 ? "Free" : `৳${delivery}`}
                   </span>
                 </div>
                 <div className="border-t border-gray-100 pt-3 flex justify-between">
-                  <span className="font-bold text-gray-800">মোট</span>
+                  <span className="font-bold text-gray-800">Total</span>
                   <span className="font-bold text-green-700 text-lg">
                     ৳{grandTotal.toLocaleString()}
                   </span>
@@ -197,14 +197,14 @@ export default function CartPage() {
                 className="w-full mt-5 bg-green-600 text-white py-3.5 rounded-xl font-semibold
                            hover:bg-green-700 active:scale-[0.98] transition-all text-sm"
               >
-                চেকআউট করুন →
+                Check Out →
               </button>
 
               <Link
                 href="/products"
                 className="block text-center text-sm text-gray-400 hover:text-gray-600 mt-3 transition-colors"
               >
-                কেনাকাটা চালিয়ে যান
+                Continue Shopping
               </Link>
             </div>
           </div>
