@@ -1,25 +1,24 @@
-import { ReactNode } from "react";
+// src/store/cartStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface CartItem {
-  image_url: string;
-  category: ReactNode;
-  stock: number;
   id: string;
   name: string;
   price: number;
   image: string;
+  image_url: string;
+  category: string;
+  stock: number;
   quantity: number;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  total: () => number;
   totalItems: () => number;
   totalPrice: () => number;
 }
@@ -32,14 +31,27 @@ export const useCartStore = create<CartStore>()(
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => i.id === item.id);
+
           if (existing) {
+            // ✅ Duplicate: add quantities but NEVER exceed stock
+            const newQty = Math.min(
+              existing.quantity + item.quantity,
+              item.stock, // cap at stock
+            );
             return {
               items: state.items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+                i.id === item.id ? { ...i, quantity: newQty } : i,
               ),
             };
           }
-          return { items: [...state.items, { ...item, quantity: 1 }] };
+
+          // ✅ New item: quantity can't exceed stock
+          return {
+            items: [
+              ...state.items,
+              { ...item, quantity: Math.min(item.quantity, item.stock) },
+            ],
+          };
         }),
 
       removeItem: (id) =>
@@ -48,17 +60,20 @@ export const useCartStore = create<CartStore>()(
         })),
 
       updateQuantity: (id, quantity) =>
-        set((state) => ({
-          items:
-            quantity === 0
-              ? state.items.filter((i) => i.id !== id)
-              : state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
-        })),
+        set((state) => {
+          if (quantity <= 0) {
+            return { items: state.items.filter((i) => i.id !== id) };
+          }
+          return {
+            items: state.items.map((i) =>
+              i.id === id
+                ? { ...i, quantity: Math.min(quantity, i.stock) } // ✅ stock cap
+                : i,
+            ),
+          };
+        }),
 
       clearCart: () => set({ items: [] }),
-
-      total: () =>
-        get().items.reduce((acc, i) => acc + i.price * i.quantity, 0),
 
       totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
 
