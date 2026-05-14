@@ -151,22 +151,22 @@ export default function ProductDetails({ product }: { product: Product }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: 0.1, ease: "easeOut" }}
             className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl
-                       p-4 sm:p-5 md:p-6 shadow-2xl space-y-5"
+                       p-4 sm:p-5 md:p-6 shadow-2xl space-y-3 md:space-y-5"
           >
             {/* Category badge */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <Tag size={13} className="text-slate-400" />
               <span className="text-xs text-slate-400 uppercase tracking-wider font-medium">
                 {product.category}
               </span>
             </div>
 
-            {/* Name */}
+            {/* NAME */}
             <div className="flex justify-between">
-              <h1 className="text-xl md:text-3xl font-bold text-black/70 leading-tight">
+              <h1 className="text-xl md:text-3xl font-bold text-black/70 leading-tight mb-[-4px] md:mb-0">
                 {product.name}
-              </h1>{" "}
-              <div className="flex items-center gap-1">
+              </h1>
+              <div className="flex items-center gap-1 mt-[-4px] md:mt-0">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star
                     key={s}
@@ -181,23 +181,23 @@ export default function ProductDetails({ product }: { product: Product }) {
                 <span className="text-xs text-slate-400 ml-1">(4.0)</span>
               </div>
             </div>
-            {/* Price */}
-            <div className="flex items-end gap-3">
-              {" "}
-              price
+            {/* RATING */}
+
+            {/* PRICE (tight spacing fixed) */}
+            <div className="flex items-end gap-3 mt-[-6px] md:mt-0">
               <span className="text-2xl md:text-3xl font-extrabold text-green-400">
                 ৳{product.price.toLocaleString()}
               </span>
             </div>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
             {product.description && (
-              <p className="text-black/60 text-sm leading-relaxed border-t border-white/10 pt-4">
+              <p className="text-black/60 text-sm leading-relaxed border-t border-white/10 pt-3">
                 {product.description}
               </p>
             )}
 
-            {/* Stock info */}
+            {/* STOCK INFO */}
             <div className="flex items-center gap-2 text-sm">
               <Package size={15} className="text-black/60" />
               <span className="text-black/60">
@@ -212,7 +212,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               </span>
             </div>
 
-            {/* ─── QUANTITY SELECTOR ─── */}
+            {/* QUANTITY */}
             <div className="space-y-2 pt-1">
               <label className="text-xs text-black/60 uppercase tracking-wider font-medium">
                 Quantity
@@ -260,41 +260,30 @@ export default function ProductDetails({ product }: { product: Product }) {
               </div>
             </div>
 
-            {/* Already in cart notice */}
+            {/* CART NOTICE */}
             <AnimatePresence>
               {alreadyInCartQty > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20
-                             rounded-xl px-3 py-2.5 text-sm text-blue-300"
-                >
+                <motion.div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2.5 text-sm text-blue-300">
                   <CheckCircle2 size={14} className="shrink-0" />
                   <span>
-                    {alreadyInCartQty} unit{alreadyInCartQty > 1 ? "s" : ""}{" "}
-                    already in your cart
+                    {alreadyInCartQty} unit{alreadyInCartQty > 1 ? "s" : ""} in
+                    cart
                   </span>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Out of stock notice */}
+            {/* OUT OF STOCK */}
             <AnimatePresence>
               {isOutOfStock && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex items-center gap-2 bg-red-500/10 border border-red-500/20
-                             rounded-xl px-3 py-2.5 text-sm text-red-400"
-                >
+                <motion.div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2.5 text-sm text-red-400">
                   <AlertCircle size={14} className="shrink-0" />
-                  This product is out of stock. Check back soon.
+                  Out of stock
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* ─── ADD TO CART BUTTON ─── */}
+            {/* BUTTON (NO SPACING SHIFT) */}
             <motion.div whileTap={{ scale: 0.98 }}>
               <Button
                 onClick={handleAddToCart}
