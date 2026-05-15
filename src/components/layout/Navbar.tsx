@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 import {
   Menu,
   X,
   ShoppingCart,
-  User,
+  User as UserIcon,
   Search,
   Package,
   Home,
@@ -33,6 +35,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const NAV_LINKS = [
   { href: "/", label: "Home", icon: Home },
@@ -42,20 +45,44 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
 
   const { items } = useCartStore();
   const cartCount = items.reduce((acc, i) => acc + i.quantity, 0);
 
-  // User — পরে Supabase auth থেকে আসবে
-  const user = null as null | { name: string; email: string; image?: string };
+  useEffect(() => {
+    // Initial session check
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    // Auth state listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setUser(null);
+    toast.success("লগআউট সফল");
+    router.push("/");
+    router.refresh();
+  }
+
+  const displayName = user?.user_metadata?.full_name ?? user?.email ?? "";
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 glass">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between gap-4">
-        {/* ── বাম পাশে: Mobile Menu Icon + Logo ── */}
+        {/* বাম: Mobile Menu + Logo */}
         <div className="flex items-center gap-3">
-          {/* Hamburger — শুধু mobile এ দেখাবে */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button
@@ -67,7 +94,6 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-
             <SheetContent side="left" className="w-72 p-0 glass">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex items-center justify-between px-5 h-16 border-b">
@@ -86,7 +112,6 @@ export function Navbar() {
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-
               <nav className="flex flex-col gap-1 p-4">
                 {NAV_LINKS.map(({ href, label, icon: Icon }) => (
                   <Link
@@ -104,17 +129,28 @@ export function Navbar() {
                     {label}
                   </Link>
                 ))}
+                {user && (
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-muted transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
 
-          {/* Logo */}
           <Link href="/" className="text-xl font-bold tracking-tight">
             Super<span className="text-primary">Shop</span>
           </Link>
         </div>
 
-        {/* ── মাঝে: Desktop Nav Links ── */}
+        {/* মাঝে: Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
@@ -132,9 +168,8 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* ── ডান পাশে: Search + Cart + Profile ── */}
+        {/* ডান: Search + Cart + Profile */}
         <div className="flex items-center gap-1">
-          {/* Search */}
           <Button
             variant="ghost"
             size="icon"
@@ -144,7 +179,6 @@ export function Navbar() {
             <Search className="h-5 w-5" />
           </Button>
 
-          {/* Cart — animated badge সহ */}
           <Link href="/cart">
             <Button
               variant="ghost"
@@ -173,7 +207,7 @@ export function Navbar() {
             </Button>
           </Link>
 
-          {/* Profile */}
+          {/* User logged in */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -184,17 +218,19 @@ export function Navbar() {
                   aria-label="Profile"
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.image} alt={user.name} />
-                    <AvatarFallback>
-                      {user.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
+                    <AvatarImage src={user.user_metadata?.avatar_url} />
+                    <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
                 <div className="px-3 py-2">
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <p className="font-medium text-sm">
+                    {user.user_metadata?.full_name ?? "User"}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -204,8 +240,11 @@ export function Navbar() {
                   <Link href="/orders">My Orders</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" /> Sign out
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-destructive cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -217,7 +256,7 @@ export function Navbar() {
               className="hidden sm:flex"
             >
               <Link href="/login">
-                <User className="mr-2 h-4 w-4" /> Login
+                <UserIcon className="mr-2 h-4 w-4" /> Login
               </Link>
             </Button>
           )}

@@ -30,12 +30,21 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
+  // Protected user routes — login ছাড়া ঢুকতে পারবে না
+  if (pathname.startsWith("/orders") || pathname.startsWith("/checkout")) {
+    if (!user) {
+      return NextResponse.redirect(
+        new URL(`/login?from=${pathname}`, request.url),
+      );
+    }
+  }
+
   // Admin route guard
   if (pathname.startsWith("/admin")) {
     if (!user) {
       return NextResponse.redirect(new URL("/login?from=admin", request.url));
     }
-    // Check admin role from user metadata or profiles table
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
@@ -49,7 +58,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect logged-in users away from auth pages
+  // Logged-in user কে login/register থেকে সরিয়ে দাও
   if (user && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
@@ -58,5 +67,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/register", "/checkout/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/login",
+    "/register",
+    "/checkout/:path*",
+    "/orders/:path*",
+    "/orders",
+  ],
 };
