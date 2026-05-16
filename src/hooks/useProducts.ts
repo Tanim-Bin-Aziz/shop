@@ -1,6 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { Product, Review } from "@/types";
+import type { ProductInsert, ProductUpdate } from "@/types/product";
+import { toast } from "sonner";
+
+// ─── Queries ────────────────────────────────────────────
 
 export function useProducts(category?: string) {
   return useQuery({
@@ -54,5 +58,66 @@ export function useReviews(productId: string) {
       if (error) throw error;
       return data as Review[];
     },
+  });
+}
+
+// ─── Admin Mutations ─────────────────────────────────────
+
+export function useCreateProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (product: ProductInsert) => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("products")
+        .insert(product)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as Product;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product created!");
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+}
+
+export function useUpdateProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: ProductUpdate }) => {
+      const supabase = createClient();
+      const { data: updated, error } = await supabase
+        .from("products")
+        .update({ ...data, updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return updated as Product;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product updated!");
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+}
+
+export function useDeleteProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = createClient();
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product deleted!");
+    },
+    onError: (err: Error) => toast.error(err.message),
   });
 }
