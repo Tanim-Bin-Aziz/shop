@@ -99,9 +99,6 @@ export function Navbar() {
   // ✅ ONLY FIX (NO STRUCTURE CHANGE)
   const isAdmin = role === "admin";
 
-  console.log(user);
-  console.log(role);
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 glass">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between gap-4">
