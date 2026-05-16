@@ -16,35 +16,35 @@ import {
 
 const STATUS_CONFIG = {
   pending: {
-    label: "অপেক্ষমান",
+    label: "Waiting for confirmation",
     color: "text-amber-400",
     bg: "bg-amber-400/10",
     icon: Clock,
     step: 1,
   },
   processing: {
-    label: "প্রস্তুত হচ্ছে",
+    label: "Processing",
     color: "text-blue-400",
     bg: "bg-blue-400/10",
     icon: Package,
     step: 2,
   },
   shipped: {
-    label: "পাঠানো হয়েছে",
+    label: "Shipped",
     color: "text-violet-400",
     bg: "bg-violet-400/10",
     icon: Truck,
     step: 3,
   },
   delivered: {
-    label: "ডেলিভারি হয়েছে",
+    label: "Delivered",
     color: "text-emerald-400",
     bg: "bg-emerald-400/10",
     icon: CheckCircle2,
     step: 4,
   },
   cancelled: {
-    label: "বাতিল",
+    label: "Cancelled",
     color: "text-red-400",
     bg: "bg-red-400/10",
     icon: XCircle,
@@ -99,7 +99,7 @@ export default async function OrderDetailPage({
     STATUS_CONFIG.pending;
   const StatusIcon = status.icon;
   const currentStep = status.step;
-  const date = new Date(order.created_at).toLocaleString("bn-BD", {
+  const date = new Date(order.created_at).toLocaleString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -123,7 +123,7 @@ export default async function OrderDetailPage({
           </Link>
           <div>
             <h1 className="text-lg font-bold text-foreground">
-              অর্ডার #{order.id.slice(0, 8).toUpperCase()}
+              Order #{order.id.slice(0, 8).toUpperCase()}
             </h1>
             <p className="text-xs text-muted-foreground">{date}</p>
           </div>
@@ -143,7 +143,7 @@ export default async function OrderDetailPage({
         {order.status !== "cancelled" && (
           <div className="bg-card border border-border rounded-2xl p-5">
             <h2 className="text-sm font-semibold text-foreground mb-4">
-              অর্ডার ট্র্যাকিং
+              Order Tracking
             </h2>
             <div className="flex items-center justify-between relative">
               <div className="absolute top-4 left-0 right-0 h-0.5 bg-border mx-8" />
@@ -192,7 +192,7 @@ export default async function OrderDetailPage({
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">
-              অর্ডারের আইটেম
+              Order Items
             </h2>
           </div>
           <div className="divide-y divide-border">
@@ -226,7 +226,7 @@ export default async function OrderDetailPage({
                       {product?.category}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      × {item.quantity} পিস
+                      × {item.quantity} Items
                     </p>
                   </div>
                   <p className="text-sm font-semibold text-foreground flex-shrink-0">
@@ -248,17 +248,17 @@ export default async function OrderDetailPage({
               return (
                 <>
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>সাবটোটাল</span>
+                    <span>Subtotal</span>
                     <span>৳{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>ডেলিভারি চার্জ</span>
+                    <span>Delivery Charge</span>
                     <span className="text-emerald-500">
-                      {delivery === 0 ? "ফ্রি" : `৳${delivery}`}
+                      {delivery === 0 ? "Free" : `৳${delivery}`}
                     </span>
                   </div>
                   <div className="flex justify-between font-bold text-foreground pt-2 border-t border-border">
-                    <span>মোট</span>
+                    <span>Total</span>
                     <span>৳{order.total.toLocaleString()}</span>
                   </div>
                 </>
@@ -270,17 +270,17 @@ export default async function OrderDetailPage({
         {/* Delivery Info */}
         <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
           <h2 className="text-sm font-semibold text-foreground mb-2">
-            ডেলিভারি তথ্য
+            Delivery Information
           </h2>
           {[
-            { icon: Phone, label: "ফোন", value: order.phone },
-            { icon: MapPin, label: "ঠিকানা", value: order.shipping_address },
+            { icon: Phone, label: "Phone", value: order.phone },
+            { icon: MapPin, label: "Address", value: order.shipping_address },
             {
               icon: CreditCard,
-              label: "পেমেন্ট",
+              label: "Payment Method",
               value:
                 order.payment_method === "cod"
-                  ? "ক্যাশ অন ডেলিভারি"
+                  ? "Cash on Delivery"
                   : order.payment_method,
             },
           ].map(({ icon: Icon, label, value }) =>
@@ -302,7 +302,7 @@ export default async function OrderDetailPage({
         {order.notes && (
           <div className="bg-amber-400/5 border border-amber-400/20 rounded-2xl p-4">
             <p className="text-xs text-amber-400 font-medium mb-1">
-              বিশেষ নির্দেশনা
+              Special Instructions
             </p>
             <p className="text-sm text-foreground">{order.notes}</p>
           </div>

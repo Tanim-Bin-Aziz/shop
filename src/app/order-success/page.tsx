@@ -32,34 +32,34 @@ function OrderSuccessContent() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          অর্ডার সফল হয়েছে! 🎉
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          order successful 🎉
         </h1>
         <p className="text-gray-500 mb-6">
-          আপনার অর্ডার গ্রহণ করা হয়েছে। শীঘ্রই ডেলিভারি দেওয়া হবে।
+          Your order has been placed successfully. It will be delivered soon.
         </p>
 
         {shortId && (
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-6">
-            <p className="text-xs text-gray-400 mb-1">অর্ডার নম্বর</p>
+            <p className="text-xs text-gray-400 mb-1">Order Number</p>
             <p className="text-2xl font-bold text-green-700 tracking-widest">
               #{shortId}
             </p>
             <p className="text-xs text-gray-400 mt-2">
-              এই নম্বরটি সেভ করে রাখুন
+              Save this number for future reference
             </p>
           </div>
         )}
 
         <div className="bg-green-50 rounded-xl p-4 mb-6 text-sm text-green-700 text-left space-y-2">
           <p className="flex items-center gap-2">
-            <span>📦</span> পণ্য প্রস্তুত হচ্ছে
+            <span>📦</span> Products are being prepared
           </p>
           <p className="flex items-center gap-2">
-            <span>🚚</span> ১-৩ কার্যদিবসের মধ্যে ডেলিভারি
+            <span>🚚</span> Delivery within 1-1.5 Hours
           </p>
           <p className="flex items-center gap-2">
-            <span>📞</span> ডেলিভারির আগে ফোন করা হবে
+            <span>📞</span> A call will be made before delivery
           </p>
         </div>
 
@@ -69,14 +69,14 @@ function OrderSuccessContent() {
             className="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold
                        hover:bg-green-700 transition-colors text-sm"
           >
-            আরও কেনাকাটা করুন
+            buy more products
           </Link>
           <Link
             href="/orders"
             className="flex-1 bg-white text-gray-700 py-3 rounded-xl font-semibold
                        border border-gray-200 hover:bg-gray-50 transition-colors text-sm"
           >
-            আমার অর্ডার দেখুন
+            view my orders
           </Link>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function OrderSuccessPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          লোড হচ্ছে...
+          Loading...
         </div>
       }
     >

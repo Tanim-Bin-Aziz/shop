@@ -14,31 +14,31 @@ import {
 
 const STATUS_CONFIG = {
   pending: {
-    label: "অপেক্ষমান",
+    label: "Waiting for confirmation",
     color: "text-amber-400",
     bg: "bg-amber-400/10",
     icon: Clock,
   },
   processing: {
-    label: "প্রস্তুত হচ্ছে",
+    label: "Processing",
     color: "text-blue-400",
     bg: "bg-blue-400/10",
     icon: Package,
   },
   shipped: {
-    label: "পাঠানো হয়েছে",
+    label: "Shipped",
     color: "text-violet-400",
     bg: "bg-violet-400/10",
     icon: Truck,
   },
   delivered: {
-    label: "ডেলিভারি হয়েছে",
+    label: "Delivered",
     color: "text-emerald-400",
     bg: "bg-emerald-400/10",
     icon: CheckCircle2,
   },
   cancelled: {
-    label: "বাতিল",
+    label: "Cancelled",
     color: "text-red-400",
     bg: "bg-red-400/10",
     icon: XCircle,
@@ -73,9 +73,9 @@ export default async function OrdersPage() {
       <div className="max-w-3xl mx-auto px-4">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground">আমার অর্ডার</h1>
+          <h1 className="text-2xl font-bold text-foreground">My Orders</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            মোট {orders?.length ?? 0}টি অর্ডার
+            Total {orders?.length ?? 0} orders
           </p>
         </div>
 
@@ -86,16 +86,16 @@ export default async function OrdersPage() {
               <ShoppingBag className="w-10 h-10 text-muted-foreground" />
             </div>
             <h2 className="text-lg font-semibold text-foreground mb-2">
-              কোনো অর্ডার নেই
+              No Orders Found
             </h2>
             <p className="text-muted-foreground text-sm mb-6">
-              এখনো কোনো অর্ডার করেননি
+              You haven&lsquo;t placed any orders yet.
             </p>
             <Link
               href="/products"
               className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
             >
-              শপিং শুরু করুন
+              Start Shopping
             </Link>
           </div>
         ) : (
@@ -106,7 +106,7 @@ export default async function OrdersPage() {
                 STATUS_CONFIG.pending;
               const StatusIcon = status.icon;
               const date = new Date(order.created_at).toLocaleDateString(
-                "bn-BD",
+                "en-US",
                 { year: "numeric", month: "long", day: "numeric" },
               );
 
@@ -124,7 +124,7 @@ export default async function OrdersPage() {
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">
-                          অর্ডার নং
+                          Order Number
                         </p>
                         <p className="text-sm font-mono font-semibold text-foreground">
                           #{order.id.slice(0, 8).toUpperCase()}
@@ -201,10 +201,10 @@ export default async function OrdersPage() {
                   {/* Order Footer */}
                   <div className="flex items-center justify-between px-5 py-3 bg-muted/30 border-t border-border">
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{order.order_items.length} আইটেম</span>
+                      <span>{order.order_items.length} Items</span>
                       <span>
                         {order.payment_method === "cod"
-                          ? "ক্যাশ অন ডেলিভারি"
+                          ? "Cash on Delivery"
                           : order.payment_method}
                       </span>
                     </div>
