@@ -7,8 +7,16 @@ export interface Product {
   image_url: string;
   category: string;
   created_at: string;
+  updated_at: string;
 }
-
+export type ProductInsert = {
+  name: string;
+  description?: string | null;
+  price: number;
+  stock: number;
+  category?: string | null;
+  image_url?: string | null;
+};
 export interface Review {
   id: string;
   product_id: string;
@@ -29,6 +37,7 @@ export interface CartItem {
   image: string;
   quantity: number;
 }
+export type ProductUpdate = Partial<ProductInsert>;
 
 export interface Order {
   id: string;

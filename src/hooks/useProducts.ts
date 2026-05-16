@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { Product, Review } from "@/types";
-import type { ProductInsert, ProductUpdate } from "@/types/product";
+import type { ProductInsert, ProductUpdate } from "@/types/index";
 import { toast } from "sonner";
 
 // ─── Queries ────────────────────────────────────────────
@@ -91,7 +91,7 @@ export function useUpdateProduct() {
       const supabase = createClient();
       const { data: updated, error } = await supabase
         .from("products")
-        .update({ ...data, updated_at: new Date().toISOString() })
+        .update(data)
         .eq("id", id)
         .select()
         .single();
