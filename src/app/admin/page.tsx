@@ -21,26 +21,26 @@ export default async function AdminDashboard() {
 
   const stats = [
     {
-      label: "মোট অর্ডার",
+      label: "Total Orders",
       value: totalOrders ?? 0,
       icon: ShoppingCart,
       color: "violet",
     },
     {
-      label: "প্রোডাক্ট",
+      label: "Products",
       value: totalProducts ?? 0,
       icon: Package,
       color: "indigo",
     },
-    { label: "আজকের সেলস", value: "৳0", icon: DollarSign, color: "emerald" },
-    { label: "রিভিউ", value: 0, icon: Star, color: "amber" },
+    { label: "Today's Sales", value: "৳0", icon: DollarSign, color: "emerald" },
+    { label: "Reviews", value: 0, icon: Star, color: "amber" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">ড্যাশবোর্ড</h1>
-        <p className="text-slate-400 text-sm mt-1">আপনার শপের সারসংক্ষেপ</p>
+        <h1 className="text-2xl font-bold text-black/60">Dashboard</h1>
+        <p className="text-slate-400 text-sm mt-1">Your shop&apos;s summary</p>
       </div>
 
       {/* Stats Grid */}
@@ -65,10 +65,10 @@ export default async function AdminDashboard() {
 
       {/* Recent Orders */}
       <div className="bg-slate-900 border border-white/5 rounded-2xl p-5">
-        <h2 className="text-white font-semibold mb-4">সাম্প্রতিক অর্ডার</h2>
+        <h2 className="text-white font-semibold mb-4">Recent Order</h2>
         {recentOrders?.length === 0 ? (
           <p className="text-slate-500 text-sm text-center py-8">
-            কোনো অর্ডার নেই
+            No recent orders
           </p>
         ) : (
           <div className="space-y-2">

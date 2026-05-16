@@ -16,21 +16,21 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin", label: "ড্যাশবোর্ড", icon: LayoutDashboard, exact: true },
-  { href: "/admin/products", label: "প্রোডাক্ট", icon: Package },
-  { href: "/admin/orders", label: "অর্ডার", icon: ShoppingCart },
-  { href: "/admin/sales", label: "সেলস", icon: BarChart2 },
-  { href: "/admin/expenses", label: "খরচ ট্র্যাকার", icon: DollarSign },
-  { href: "/admin/reviews", label: "রিভিউ", icon: Star },
-  { href: "/admin/customers", label: "কাস্টমার", icon: Users },
-  { href: "/admin/settings", label: "সেটিংস", icon: Settings },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/sales", label: "Sales", icon: BarChart2 },
+  { href: "/admin/expenses", label: "Expenses", icon: DollarSign },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/customers", label: "Customers", icon: Users },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-white/5 flex flex-col h-full">
+    <aside className="w-64 flex-shrink-0 bg-white border-r border-white/5 flex flex-col h-full">
       {/* Logo */}
       <div className="p-5 border-b border-white/5">
         <Link href="/admin" className="flex items-center gap-3">
@@ -38,7 +38,7 @@ export default function AdminSidebar() {
             <ShoppingBag className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-none">
+            <p className="text-black/60 font-bold text-sm leading-none">
               Super Shop
             </p>
             <p className="text-slate-500 text-xs mt-0.5">Admin Panel</p>
@@ -49,7 +49,7 @@ export default function AdminSidebar() {
       {/* Nav */}
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         <p className="text-slate-600 text-[10px] font-semibold uppercase tracking-wider px-3 py-2">
-          মেনু
+          Menu
         </p>
         {navItems.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
@@ -60,22 +60,20 @@ export default function AdminSidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group",
                 active
-                  ? "bg-violet-500/15 text-violet-400 border border-violet-500/20"
-                  : "text-slate-400 hover:text-white hover:bg-white/5",
+                  ? "bg-black text-white border border-black/10"
+                  : "text-black/60 hover:text-black hover:bg-black/10",
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 flex-shrink-0",
                   active
-                    ? "text-violet-400"
-                    : "text-slate-500 group-hover:text-slate-300",
+                    ? "text-white"
+                    : "text-black/60 group-hover:text-black",
                 )}
               />
               <span className="flex-1">{label}</span>
-              {active && (
-                <ChevronRight className="w-3 h-3 text-violet-400/60" />
-              )}
+              {active && <ChevronRight className="w-3 h-3 text-white" />}
             </Link>
           );
         })}
@@ -85,10 +83,10 @@ export default function AdminSidebar() {
       <div className="p-3 border-t border-white/5">
         <Link
           href="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-white hover:bg-white/5 transition-all"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-black/60 hover:text-black hover:bg-black/10 transition-all"
         >
           <ShoppingBag className="w-4 h-4" />
-          স্টোরে যান
+          <span>Visit Store</span>
         </Link>
       </div>
     </aside>

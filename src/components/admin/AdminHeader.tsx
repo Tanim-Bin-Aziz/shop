@@ -23,15 +23,15 @@ export default function AdminHeader({ user }: Props) {
 
   async function handleLogout() {
     await supabase.auth.signOut();
-    toast.success("লগআউট সফল");
+    toast.success("Logged out successfully");
     router.push("/login");
     router.refresh();
   }
 
   return (
-    <header className="h-16 border-b border-white/5 bg-slate-900/50 backdrop-blur-sm flex items-center justify-between px-6 flex-shrink-0">
+    <header className="h-16 border-b border-white/5 bg-white backdrop-blur-sm flex items-center justify-between px-6 flex-shrink-0">
       <div>
-        <h2 className="text-white font-semibold text-sm">Admin Dashboard</h2>
+        <h2 className="text-black/60 font-semibold text-sm">Admin Dashboard</h2>
         <p className="text-slate-500 text-xs">Super Shop Management</p>
       </div>
 
@@ -57,7 +57,7 @@ export default function AdminHeader({ user }: Props) {
                 </AvatarFallback>
               </Avatar>
               <div className="text-left hidden sm:block">
-                <p className="text-white text-xs font-medium leading-none">
+                <p className="text-black/60 text-xs font-medium leading-none">
                   {user.name ?? "Admin"}
                 </p>
                 <p className="text-slate-500 text-[10px] mt-0.5 truncate max-w-[120px]">
@@ -68,17 +68,17 @@ export default function AdminHeader({ user }: Props) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="bg-slate-800 border-white/10 text-slate-300 w-44"
+            className="bg-white border-white/10 text-black/60 w-44"
           >
-            <DropdownMenuItem className="hover:bg-white/5 cursor-pointer">
-              <User className="w-3.5 h-3.5 mr-2" /> প্রোফাইল
+            <DropdownMenuItem className="hover:bg-black/10 cursor-pointer">
+              <User className="w-3.5 h-3.5 mr-2" /> Profile
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-white/10" />
             <DropdownMenuItem
               onClick={handleLogout}
               className="hover:bg-red-500/10 text-red-400 cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5 mr-2" /> লগআউট
+              <LogOut className="w-3.5 h-3.5 mr-2" /> Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

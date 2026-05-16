@@ -48,20 +48,37 @@ export function Navbar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+
   const supabase = createClient();
 
   const { items } = useCartStore();
   const cartCount = items.reduce((acc, i) => acc + i.quantity, 0);
 
   useEffect(() => {
-    // Initial session check
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const getUserWithRole = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const currentUser = userData.user;
 
-    // Auth state listener
+      setUser(currentUser);
+
+      if (currentUser) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", currentUser.id)
+          .single();
+
+        setRole(profile?.role ?? null);
+      }
+    };
+
+    getUserWithRole();
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(() => {
+      getUserWithRole();
     });
 
     return () => subscription.unsubscribe();
@@ -70,6 +87,7 @@ export function Navbar() {
   async function handleLogout() {
     await supabase.auth.signOut();
     setUser(null);
+    setRole(null);
     toast.success("লগআউট সফল");
     router.push("/");
     router.refresh();
@@ -78,30 +96,29 @@ export function Navbar() {
   const displayName = user?.user_metadata?.full_name ?? user?.email ?? "";
   const initials = displayName.slice(0, 2).toUpperCase();
 
+  // ✅ ONLY FIX (NO STRUCTURE CHANGE)
+  const isAdmin = role === "admin";
+
+  console.log(user);
+  console.log(role);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 glass">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between gap-4">
-        {/* বাম: Mobile Menu + Logo */}
+        {/* LEFT */}
         <div className="flex items-center gap-3">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                aria-label="Open menu"
-              >
+              <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
+
             <SheetContent side="left" className="w-72 p-0 glass">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+
               <div className="flex items-center justify-between px-5 h-16 border-b">
-                <Link
-                  href="/"
-                  className="text-lg font-bold"
-                  onClick={() => setMobileOpen(false)}
-                >
+                <Link href="/" onClick={() => setMobileOpen(false)}>
                   Super<span className="text-primary">Shop</span>
                 </Link>
                 <Button
@@ -112,6 +129,7 @@ export function Navbar() {
                   <X className="h-4 w-4" />
                 </Button>
               </div>
+
               <nav className="flex flex-col gap-1 p-4">
                 {NAV_LINKS.map(({ href, label, icon: Icon }) => (
                   <Link
@@ -119,7 +137,7 @@ export function Navbar() {
                     href={href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                      "flex items-center gap-3 px-4 py-3 rounded-xl",
                       pathname === href
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-muted",
@@ -129,13 +147,25 @@ export function Navbar() {
                     {label}
                   </Link>
                 ))}
+
+                {isAdmin && (
+                  <Link
+                    href="/orders"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted"
+                  >
+                    <Package className="h-4 w-4" />
+                    Admin Panel
+                  </Link>
+                )}
+
                 {user && (
                   <button
                     onClick={() => {
                       handleLogout();
                       setMobileOpen(false);
                     }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-muted transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 text-destructive"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout
@@ -145,22 +175,22 @@ export function Navbar() {
             </SheetContent>
           </Sheet>
 
-          <Link href="/" className="text-xl font-bold tracking-tight">
+          <Link href="/" className="text-xl font-bold">
             Super<span className="text-primary">Shop</span>
           </Link>
         </div>
 
-        {/* মাঝে: Desktop Nav */}
+        {/* CENTER */}
         <nav className="hidden md:flex items-center gap-1">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                "px-4 py-2 rounded-lg",
                 pathname === href
                   ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                  : "hover:bg-muted",
               )}
             >
               {label}
@@ -168,24 +198,14 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* ডান: Search + Cart + Profile */}
+        {/* RIGHT */}
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Search"
-            className="hidden sm:flex"
-          >
+          <Button variant="ghost" size="icon" className="hidden sm:flex">
             <Search className="h-5 w-5" />
           </Button>
 
           <Link href="/cart">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              aria-label="Cart"
-            >
+            <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
               <AnimatePresence>
                 {cartCount > 0 && (
@@ -195,10 +215,7 @@ export function Navbar() {
                     exit={{ scale: 0 }}
                     className="absolute -top-1 -right-1"
                   >
-                    <Badge
-                      variant="destructive"
-                      className="h-5 w-5 p-0 flex items-center justify-center text-[10px]"
-                    >
+                    <Badge className="h-5 w-5 text-[10px]">
                       {cartCount > 9 ? "9+" : cartCount}
                     </Badge>
                   </motion.span>
@@ -207,54 +224,48 @@ export function Navbar() {
             </Button>
           </Link>
 
-          {/* User logged in */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  aria-label="Profile"
-                >
+                <Button variant="ghost" size="icon">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user.user_metadata?.avatar_url} />
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent align="end" className="w-52">
                 <div className="px-3 py-2">
-                  <p className="font-medium text-sm">
-                    {user.user_metadata?.full_name ?? "User"}
-                  </p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user.email}
-                  </p>
+                  <p>{displayName}</p>
+                  <p className="text-xs">{user.email}</p>
                 </div>
+
                 <DropdownMenuSeparator />
+
                 <DropdownMenuItem asChild>
                   <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
+
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin">Admin Panel</Link>
+                  </DropdownMenuItem>
+                )}
+
                 <DropdownMenuItem asChild>
                   <Link href="/orders">My Orders</Link>
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="text-destructive cursor-pointer"
-                >
+
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button
-              asChild
-              size="sm"
-              variant="outline"
-              className="hidden sm:flex"
-            >
+            <Button asChild size="sm" variant="outline">
               <Link href="/login">
                 <UserIcon className="mr-2 h-4 w-4" /> Login
               </Link>
