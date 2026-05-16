@@ -37,7 +37,23 @@ export interface CartItem {
   image: string;
   quantity: number;
 }
-export type ProductUpdate = Partial<ProductInsert>;
+export interface Expense {
+  id: string;
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+  note: string | null;
+  created_at: string;
+}
+
+export type ExpenseInsert = {
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+  note?: string | null;
+};
 
 export interface Order {
   id: string;
@@ -46,3 +62,5 @@ export interface Order {
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   created_at: string;
 }
+export type ExpenseUpdate = Partial<ExpenseInsert>;
+export type ProductUpdate = Partial<ProductInsert>;
