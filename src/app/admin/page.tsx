@@ -9,6 +9,7 @@ export default async function AdminDashboard() {
     { count: totalOrders },
     { count: totalProducts },
     { data: recentOrders },
+    { data: todayOrders },
   ] = await Promise.all([
     supabase.from("orders").select("*", { count: "exact", head: true }),
     supabase.from("products").select("*", { count: "exact", head: true }),
@@ -17,7 +18,18 @@ export default async function AdminDashboard() {
       .select("id, total, status, created_at")
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("orders")
+      .select("total")
+      .eq("status", "delivered")
+      .gte(
+        "created_at",
+        new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+      ),
   ]);
+
+  const todaysSales =
+    todayOrders?.reduce((sum, o) => sum + Number(o.total), 0) ?? 0;
 
   const stats = [
     {
@@ -32,7 +44,12 @@ export default async function AdminDashboard() {
       icon: Package,
       color: "indigo",
     },
-    { label: "Today's Sales", value: "৳0", icon: DollarSign, color: "emerald" },
+    {
+      label: "Today's Sales",
+      value: `৳${todaysSales.toLocaleString()}`,
+      icon: DollarSign,
+      color: "emerald",
+    },
     { label: "Reviews", value: 0, icon: Star, color: "amber" },
   ];
 
