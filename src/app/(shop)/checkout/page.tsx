@@ -92,7 +92,16 @@ export default function CheckoutPage() {
         .insert(orderItems);
 
       if (itemsError) throw itemsError;
+      const stockUpdates = items.map((item) =>
+        supabase.rpc("decrement_stock", {
+          p_id: item.id,
+          qty: item.quantity,
+        }),
+      );
 
+      const stockResults = await Promise.all(stockUpdates);
+      const stockError = stockResults.find((r) => r.error)?.error;
+      if (stockError) throw stockError;
       clearCart();
       router.push(`/order-success?id=${order.id}`);
     } catch (err) {
