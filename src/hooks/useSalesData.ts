@@ -40,10 +40,14 @@ export function useSummaryStats() {
     queryFn: async () => {
       const supabase = createClient();
 
-      const [ordersRes, customersRes] = await Promise.all([
+      const [ordersRes, allOrderUsersRes] = await Promise.all([
         supabase.from("orders").select("total, status, user_id"),
-        supabase.from("profiles").select("id", { count: "exact" }),
+        supabase.from("orders").select("user_id"),
       ]);
+
+      const totalCustomers = new Set(
+        allOrderUsersRes.data?.map((o) => o.user_id) ?? [],
+      ).size;
 
       if (ordersRes.error) throw new Error(ordersRes.error.message);
 
@@ -58,7 +62,7 @@ export function useSummaryStats() {
       return {
         totalRevenue,
         totalOrders: orders.length,
-        totalCustomers: customersRes.count ?? 0,
+        totalCustomers,
         avgOrderValue: orders.length
           ? orders.reduce((s, o) => s + Number(o.total), 0) / orders.length
           : 0,
